@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #orcamento-form {
+            max-width: 400px;
+            margin: 50px auto;
+            position: relative;  Adiciona posicionamento relativo para posicionar o botão dentro deste contêiner */
+        }
+        #resultado {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #modal {
+            display: none;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        #modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            position: relative; /* Adiciona posicionamento relativo para posicionar o botão dentro deste contêiner */
+        }
+        #fechar-modal {
+            cursor: pointer;
+            color: #333;
+            font-size: 20px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .selecionar-itens-btn {
+            background-color: red; /* Cor vermelha chamativa */
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .selecionar-itens-btn:hover {
+            background-color: darkred; /* Cor mais escura ao passar o mouse */
+        }
+        /* Posicionamento do botão dentro da caixa de seleção */
+        .selecionar-itens-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="orcamento-form">
+    <h2>Selecione os itens:</h2>
+
+    <!-- Adicionando botão "Selecionar Itens" com a classe 'selecionar-itens-btn' -->
+    <button class="selecionar-itens-btn" onclick="abrirModal()">Selecionar Itens</button>
+
+    <!-- Adicionando botões com valores iniciais diferentes -->
+    <button onclick="abrirModalComValores(120, 8, 300, 0)">Pacote 1</button>
+    <button onclick="abrirModalComValores(240, 16, 500, 90)">Pacote 2</button>
+    <button onclick="abrirModalComValores(360, 32, 550, 180)">Pacote 3</button>
+    <button onclick="abrirModalComValores(480, 16, 650, 270)">Pacote 4</button>
+    <button onclick="abrirModalComValores(600, 32, 800, 360)">Pacote 5</button>
+
+    <div id="modal">
+        <div id="modal-content">
+            <span id="fechar-modal" onclick="fecharModal()">&times;</span>
+
+            <label for="ssd">SSD:</label>
+            <select id="ssd">
+                <option value="0">120GB - R$ 0,00</option>
+                <option value="90">480GB - R$ 90,00</option>
+                <!-- Adicione opções adicionais conforme necessário -->
+            </select>
+
+            <label for="ram">RAM:</label>
+            <select id="ram">
+                <option value="0">8GB - R$ 0,00</option>
+                <option value="40">12GB - R$ 40,00</option>
+                <option value="80">32GB - R$ 80,00</option>
+                <!-- Adicione opções adicionais conforme necessário -->
+            </select>
+
+            <label for="conexao">Conexão:</label>
+            <select id="conexao">
+                <option value="0">300MB - R$ 0,00</option>
+                <option value="45">800MB - R$ 45,00</option>
+                <!-- Adicione opções adicionais conforme necessário -->
+            </select>
+
+            <label for="os">OS:</label>
+            <select id="os">
+                <option value="0">Linux - R$ 0,00</option>
+                <option value="100">Windows Server - R$ 100,00</option>
+                <!-- Adicione opções adicionais conforme necessário -->
+            </select>
+
+            <button onclick="calcularOrcamento()">Calcular Orçamento</button>
+
+            <div id="modal-resultado"></div>
+            <button onclick="enviarWhatsApp()">Enviar Orçamento por WhatsApp</button>
+        </div>
+    </div>
+
+    <div id="resultado"></div>
+</div>
+
+<script>
+    function abrirModal() {
+        document.getElementById("modal").style.display = "flex";
+    }
+
+    function abrirModalComValores(ssdValue, ramValue, conexaoValue, osValue) {
+        document.getElementById("ssd").value = ssdValue;
+        document.getElementById("ram").value = ramValue;
+        document.getElementById("conexao").value = conexaoValue;
+        document.getElementById("os").value = osValue;
+        abrirModal();
+    }
+
+    function fecharModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    function calcularOrcamento() {
+        var ssd = document.getElementById("ssd").value;
+        var ram = document.getElementById("ram").value;
+        var conexao = document.getElementById("conexao").value;
+        var os = document.getElementById("os").value;
+
+        var valorInicial = 225.00;
+        var desconto = 0.10;
+
+        var total = valorInicial + parseFloat(ssd) + parseFloat(ram) + parseFloat(conexao) + parseFloat(os);
+        var totalComDesconto = total - (total * desconto);
+
+        // Exibir valores na janela de seleção de itens
+        document.getElementById("modal-resultado").innerHTML = "Valor Total: R$ " + total.toFixed(2) +
+            "<br>Valor Total com 10% de Desconto: R$ " + totalComDesconto.toFixed(2);
+
+        // Exibir valores no resultado final
+        document.getElementById("resultado").innerHTML = "Valor Total: R$ " + total.toFixed(2) +
+            "<br>Valor Total com 10% de Desconto: R$ " + totalComDesconto.toFixed(2);
+    }
+
+    function enviarWhatsApp() {
+        const ssd = document.getElementById('ssd').options[document.getElementById('ssd').selectedIndex].text;
+        const ram = document.getElementById('ram').options[document.getElementById('ram').selectedIndex].text;
+        const conexao = document.getElementById('conexao').options[document.getElementById('conexao').selectedIndex].text;
+        const os = document.getElementById('os').options[document.getElementById('os').selectedIndex].text;
+        const total = document.getElementById('resultado').innerText;
+
+        const message = `Olá! Estou interessado na simulação de compra.\nItens Selecionados:\n${ssd}\n${ram}\n${conexao}\n${os}\n${total}`;
+
+        // Substitua o número de telefone abaixo pelo seu número do WhatsApp
+        const whatsappLink = `https://wa.me/SEUNUMERODOTELEFONE?text=${encodeURIComponent(message)}`;
+
+        // Abre uma nova janela ou guia com o link do WhatsApp
+        window.open(whatsappLink, '_blank');
+    }
+
+    // Adicionando evento de fechar modal ao botão Fechar
+    document.getElementById("fechar-modal").addEventListener("click", fecharModal);
+
+    // Adicionando eventos de abrir modal com valores aos botões com a classe abrir-modal-com-valores
+    document.querySelectorAll('.abrir-modal-com-valores').forEach(function(button) {
+        button.addEventListener('click', function() {
+            abrirModalComValores(
+                button.getAttribute('data-ssd'),
+                button.getAttribute('data-ram'),
+                button.getAttribute('data-conexao'),
+                button.getAttribute('data-os')
+            );
+        });
+    });
+</script>
+
+</body>
+</html>
